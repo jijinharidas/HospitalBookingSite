@@ -11,10 +11,14 @@ from .models import Bookings
 
 class BookingView(APIView):
     def get(self, request):
-        bookings = Bookings.objects.all().filter(bookingDate = datetime.date.today())
-        serializer = BookingSerializer(bookings, many=True)
-        return Response(serializer.data)
-    
+        if request.user.is_staff :
+            dateformat = "%Y-%m-%d"
+            dateString = datetime.date.today()
+            bookings = Bookings.objects.all().filter(bookingDate = dateString)
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data)
+        else:
+            return Response({'status': False, 'message': 'UnAuthorized access'})
     def post(self, request):
         return Response({'status': False, 'message': 'Method not Allowed'})
 
@@ -25,6 +29,10 @@ class NewBooking(generics.GenericAPIView):
     serializer_class = BookingSerializer
 
     def get(self, request):
+        if request.user.is_staff :
+            bookings = Bookings.objects.all().filter(bookingDate = datetime.date.today())
+            serializer = BookingSerializer(bookings, many=True)
+            return Response(serializer.data)
         return Response({'status': False, 'message': 'Method not Allowed'})
 
     def post(self, request,  *args, **kwargs):
@@ -36,7 +44,6 @@ class NewBooking(generics.GenericAPIView):
         serializer = self.get_serializer(data={'bookingPatient':request.user.id, 'bookingTimeSlot': request.data['timeSlot'],'bookingDate':Bookingdate})
         
         if not serializer.is_valid():
-            print(serializer)
             return Response({'status': False, 'message': 'The time slot is already taken'})
         bookings = serializer.save()
 

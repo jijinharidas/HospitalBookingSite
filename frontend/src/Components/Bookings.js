@@ -28,14 +28,14 @@ const Bookings = (props) => {
 
     const getDate = (date) => {
         console.log(date);
-        var day = date.getDate() + 1;
+        var day = date.getDate();
         if(day<10){
             day = `0${day}`;
         }
         else{
             day = String(day)
         }
-        var month = date.getDate() + 1;
+        var month = date.getMonth() + 1;
         if(month<10){
             month = `0${month}`;
         }

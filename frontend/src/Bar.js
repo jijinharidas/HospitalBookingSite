@@ -7,7 +7,7 @@ import {url} from './creds';
 const getLogoutButton = (url) => {
     const loggedIn = loadLoggedin();
     const token = loadState("token");
-    if (loggedIn === "loggedIn") {
+    if (loggedIn === "loggedIn" || loggedIn == "adminLoggedIn") {
         return (
             <Button 
                 variant="contained" 
